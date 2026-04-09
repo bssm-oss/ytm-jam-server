@@ -14,7 +14,8 @@ type ClientToServer =
   | { t: "PAUSE" }
   | { t: "SEEK"; time: number }
   | { t: "QUEUE_ADD"; trackId: string }
-  | { t: "SKIP" };
+  | { t: "SKIP" }
+  | { t: "PING" };
 
 type ServerToClient = { t: "STATE"; state: PlaybackState };
 
@@ -121,6 +122,9 @@ const applyEvent = (room: Room, event: ClientToServer): void => {
       room.state.pausedAt = null;
       return;
     }
+    case "PING": {
+      return;
+    }
   }
 };
 
@@ -150,6 +154,7 @@ const parseEvent = (raw: string): ClientToServer | null => {
         return null;
       case "PAUSE":
       case "SKIP":
+      case "PING":
         return parsed as ClientToServer;
       default:
         return null;
